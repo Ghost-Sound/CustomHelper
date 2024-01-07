@@ -39,10 +39,12 @@ jobs:
       with:
         dotnet-version: 6.0.x
       
-    - name: Build and Pack
-      run: |
-        dotnet build -c Release
-        dotnet pack -c Release /p:Version=$(Build.SourceBranchName) /p:ContinuousIntegrationBuild=true
+    - name: Build
+      run: dotnet build -c Release
+      working-directory: CustomHelper/CustomHelper
+
+    - name: Pack
+      run: dotnet pack -c Release
       working-directory: CustomHelper/CustomHelper/
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
        
