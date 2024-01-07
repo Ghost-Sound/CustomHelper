@@ -8,7 +8,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>helper</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	 <VersionPrefix>1.0.1</VersionPrefix>
+	 <VersionPrefix>1.0.2</VersionPrefix>
   </PropertyGroup>
 	
 	<ItemGroup>
@@ -20,8 +20,12 @@
 
 
 	<ItemGroup>
+    <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.25" />
+		<PackageReference Include="MailKit" Version="4.1.0" />
 	  <PackageReference Include="Ulid" Version="1.3.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 	
 </Project>
