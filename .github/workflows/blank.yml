@@ -38,16 +38,13 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-
-    - name: Determine version
-      id: version
-      run: echo "::set-output name=package_version::1.0.$((BUILD_ID++))"
       
-    - name: Build
+    - name: Build and Pack
       run: |
         dotnet build -c Release
-        dotnet pack -c Release /p:PackageVersion=${{ steps.version.outputs.package_version }}
+        dotnet pack -c Release /p:Version=$(Build.SourceBranchName) /p:ContinuousIntegrationBuild=true
       working-directory: CustomHelper/CustomHelper/
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
        
     - name: Publish to GitHub Packages
       run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/Ghost-Sound/index.json --api-key ${{ secrets.API_NUGET_KEY }}
