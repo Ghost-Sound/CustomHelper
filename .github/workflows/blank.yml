@@ -39,12 +39,14 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Build
-      run: dotnet build -c Release
-      working-directory: CustomHelper/CustomHelper
+    - name: Determine version
+      id: version
+      run: echo "::set-output name=package_version::1.0.$((BUILD_ID++))"
       
-    - name: Pack
-      run: dotnet pack -c Release
+    - name: Build
+      run: |
+        dotnet build -c Release
+        dotnet pack -c Release /p:PackageVersion=${{ steps.version.outputs.package_version }}
       working-directory: CustomHelper/CustomHelper/
        
     - name: Publish to GitHub Packages
