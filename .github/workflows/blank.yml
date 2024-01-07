@@ -45,7 +45,8 @@ jobs:
       
     - name: Pack
       run: dotnet pack -c Release
-      
+      working-directory: CustomHelper/CustomHelper/
+       
     - name: Publish to GitHub Packages
       run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/Ghost-Sound/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
