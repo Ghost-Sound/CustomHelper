@@ -21,22 +21,22 @@ namespace CustomHelper.EFcore.Class.Repository
             _dbContext = dbContext;
         }
 
-        public void Add(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
             _dbContext.Set<TEntity>().Add(entity);
         }
 
-        public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             await _dbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
         }
 
-        public void Delete(TEntity entity)
+        public virtual void Delete(TEntity entity)
         {
             _dbContext.Set<TEntity>().Remove(entity);
         }
 
-        public bool DeleteRange(IEnumerable<TEntity> entities)
+        public virtual bool DeleteRange(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace CustomHelper.EFcore.Class.Repository
             }
         }
 
-        public async Task<bool> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public virtual async Task<bool> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -70,12 +70,12 @@ namespace CustomHelper.EFcore.Class.Repository
             }
         }
 
-        public IQueryable<TEntity> GetAll()
+        public virtual IQueryable<TEntity> GetAll()
         {
             return _dbContext.Set<TEntity>();
         }
 
-        public async Task<IQueryable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<IQueryable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -87,17 +87,17 @@ namespace CustomHelper.EFcore.Class.Repository
             return result;
         }
 
-        public TEntity GetEntity(Ulid id)
+        public virtual TEntity GetEntity(Ulid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<TEntity> GetEntityAsync(Ulid id, CancellationToken cancellationToken = default)
+        public virtual async Task<TEntity> GetEntityAsync(Ulid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<TEntity>().FindAsync(id, cancellationToken);
         }
 
-        public IQueryable<TEntity> Take(int skipElements, int takeElements, (Expression<Func<TEntity, object>> expression, bool ascending) sortOrder)
+        public virtual IQueryable<TEntity> Take(int skipElements, int takeElements, (Expression<Func<TEntity, object>> expression, bool ascending) sortOrder)
         {
             var query = _dbContext.Set<TEntity>().AsNoTracking();
 
@@ -115,7 +115,7 @@ namespace CustomHelper.EFcore.Class.Repository
                 .Take(takeElements);
         }
 
-        public async Task<IQueryable<TEntity>> TakeAsync(int skipElements, int takeElements, (Expression<Func<TEntity, object>> expression, bool ascending) sortOrder, CancellationToken cancellationToken = default)
+        public virtual async Task<IQueryable<TEntity>> TakeAsync(int skipElements, int takeElements, (Expression<Func<TEntity, object>> expression, bool ascending) sortOrder, CancellationToken cancellationToken = default)
         {
             if(cancellationToken.IsCancellationRequested)
             {
@@ -138,17 +138,17 @@ namespace CustomHelper.EFcore.Class.Repository
                 .Take(takeElements);
         }
 
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
 
-        public void UpdateRange(IEnumerable<TEntity> entities)
+        public virtual void UpdateRange(IEnumerable<TEntity> entities)
         {
             _dbContext.Set<TEntity>().UpdateRange(entities);
         }
 
-        public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
