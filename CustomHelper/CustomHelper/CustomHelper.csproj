@@ -8,7 +8,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>helper</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	 <VersionPrefix>1.0.6</VersionPrefix>
+	 <VersionPrefix>1.0.7</VersionPrefix>
   </PropertyGroup>
 	
 	<ItemGroup>
@@ -20,7 +20,9 @@
 
 
 	<ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="IdentityModel" Version="6.2.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.25" />
 		<PackageReference Include="MailKit" Version="4.1.0" />
