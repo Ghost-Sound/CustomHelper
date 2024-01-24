@@ -9,6 +9,8 @@ namespace CustomHelper.Exception
     [Serializable]
     public class CustomException : System.Exception
     {
+        public object ObjectValue { get; private set; }
+
         public CustomException()
         {
         }
@@ -21,6 +23,28 @@ namespace CustomHelper.Exception
         public CustomException(string message, System.Exception innerException)
             : base(message, innerException)
         {
+        }
+
+        public CustomException(string message, object objectValue)
+            : base(message)
+        {
+            ObjectValue = objectValue;
+        }
+
+        public CustomException(string message, object objectValue, System.Exception innerException)
+            : base(message, innerException)
+        {
+            ObjectValue = objectValue;
+        }
+
+        public override string ToString()
+        {
+            string baseString = base.ToString();
+            if (ObjectValue != null)
+            {
+                return $"{baseString}\nObject Type: {ObjectValue.GetType().FullName}\nObject Value: {ObjectValue.ToString()}";
+            }
+            return baseString;
         }
 
     }
