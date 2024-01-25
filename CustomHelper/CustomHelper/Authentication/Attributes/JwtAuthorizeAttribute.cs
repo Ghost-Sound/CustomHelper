@@ -21,9 +21,9 @@ namespace CustomHelper.Authentication.Attributes
         public string[] _policies { get; }
 
         public JwtAuthorizeAttribute(
-            string[] policies,
             IConfiguration configuration,
-            ISignInKeys signInKeys)
+            ISignInKeys signInKeys,
+            params string[] policies)
         {
             _policies = policies;
             _configuration = configuration;
