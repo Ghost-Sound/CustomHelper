@@ -19,10 +19,15 @@ namespace CustomHelper.Authentication.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class JwtAuthorizeAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        public string[]? _policies { get; }
+        public string[] _policies { get; }
+
+        public JwtAuthorizeAttribute()
+        {
+            _policies = new string[0];
+        }
 
         public JwtAuthorizeAttribute(
-            params string[]? policies)
+            params string[] policies)
         {
             _policies = policies;
         }
