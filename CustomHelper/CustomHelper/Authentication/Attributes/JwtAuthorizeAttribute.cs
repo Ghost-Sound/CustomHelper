@@ -10,24 +10,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CustomHelper.Authentication.NewFolder;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CustomHelper.Authentication.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class JwtAuthorizeAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly IConfiguration _configuration;
-        private readonly ISignInKeys _signInKeys;
-        public string[] _policies { get; }
+        public string[]? _policies { get; }
 
         public JwtAuthorizeAttribute(
-            IConfiguration configuration,
-            ISignInKeys signInKeys,
-            params string[] policies)
+            params string[]? policies)
         {
             _policies = policies;
-            _configuration = configuration;
-            _signInKeys = signInKeys;
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -38,33 +35,18 @@ namespace CustomHelper.Authentication.Attributes
                 return;
             }
 
-            if (_policies.Any())
+            if (_policies.Any() && !await ValidateByPolicies(context))
             {
-                var authService = context.HttpContext.RequestServices.GetService(typeof(IAuthorizationService)) as IAuthorizationService;
-
-                var isAuthorized = false;
-
-                foreach (var policy in _policies)
-                {
-                    var authorizationResult = await authService.AuthorizeAsync(context.HttpContext.User, context, policy);
-                    if (authorizationResult.Succeeded)
-                    {
-                        isAuthorized = true;
-                        break;
-                    }
-                }
-
-                if (!isAuthorized)
-                {
-                    context.Result = new ForbidResult();
-                    return;
-                }
+                context.Result = new ForbidResult();
+                return;
             }
+
+            var configuration = context.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
 
             var jwtToken = context.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
+            var issuer = configuration["Jwt:Issuer"];
+            var audience = configuration["Jwt:Audience"];
 
             if (string.IsNullOrEmpty(jwtToken))
             {
@@ -72,21 +54,13 @@ namespace CustomHelper.Authentication.Attributes
                 return;
             }
 
+            var signInKeys = (ISignInKeys)context.HttpContext.RequestServices.GetService(typeof(ISignInKeys));
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = (SecurityKey)await _signInKeys.GetSigninKeys(audience),
-                ValidateIssuer = !string.IsNullOrEmpty(issuer),
-                ValidIssuer = issuer,
-                ValidateAudience = !string.IsNullOrEmpty(audience),
-                ValidAudience = audience,
-                ValidateLifetime = true,
-            };
 
             try
             {
-                var principal = tokenHandler.ValidateToken(jwtToken, validationParameters, out _);
+                var principal = tokenHandler.ValidateToken(jwtToken, await ValidationParameters(signInKeys, audience, issuer), out _);
 
                 return;
             }
@@ -95,6 +69,38 @@ namespace CustomHelper.Authentication.Attributes
                 context.Result = new UnauthorizedResult();
                 return;
             }
+        }
+
+        private async Task<TokenValidationParameters> ValidationParameters(ISignInKeys signInKeys, string audience, string issuer)
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = (SecurityKey)await signInKeys.GetSigninKeys(audience),
+                ValidateIssuer = !string.IsNullOrEmpty(issuer),
+                ValidIssuer = issuer,
+                ValidateAudience = !string.IsNullOrEmpty(audience),
+                ValidAudience = audience,
+                ValidateLifetime = true,
+            };
+        }
+
+        private async Task<bool> ValidateByPolicies(AuthorizationFilterContext context)
+        {
+            var isAuthorized = false;
+            var authService = context.HttpContext.RequestServices.GetService(typeof(IAuthorizationService)) as IAuthorizationService;
+
+            foreach (var policy in _policies)
+            {
+                var authorizationResult = await authService.AuthorizeAsync(context.HttpContext.User, context, policy);
+                if (authorizationResult.Succeeded)
+                {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            return isAuthorized;
         }
     }
 }
