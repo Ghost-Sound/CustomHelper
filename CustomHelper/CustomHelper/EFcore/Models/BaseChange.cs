@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CustomHelper.EFcore.Models
 {
-    public abstract class BaseChange<T>
+    public abstract class BaseChange
     {
         public abstract DateTime? CreationDate { get; set; }
         public abstract DateTime? LastModifiedDate { get; set; }
-        public abstract T? ModifiedUser { get; set; }
     }
 }
