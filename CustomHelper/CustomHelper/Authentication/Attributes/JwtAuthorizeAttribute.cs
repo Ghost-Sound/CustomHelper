@@ -78,10 +78,12 @@ namespace CustomHelper.Authentication.Attributes
 
         private async Task<TokenValidationParameters> ValidationParameters(ISignInKeys signInKeys, string audience, string issuer)
         {
+            var key = await signInKeys.GetSigninKeys(issuer);
+
             return new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = (SecurityKey)await signInKeys.GetSigninKeys(audience),
+                IssuerSigningKey = key.FirstOrDefault(),
                 ValidateIssuer = !string.IsNullOrEmpty(issuer),
                 ValidIssuer = issuer,
                 ValidateAudience = !string.IsNullOrEmpty(audience),
