@@ -49,5 +49,5 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
        
     - name: Publish to GitHub Packages
-      run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/Ghost-Sound/index.json --api-key ${{ secrets.API_NUGET_KEY }}
+      run: dotnet nuget push **/*.nupkg --source https://nuget.pkg.github.com/Ghost-Sound/index.json --api-key ${{ secrets.API_NUGET_KEY_NEW }}
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
