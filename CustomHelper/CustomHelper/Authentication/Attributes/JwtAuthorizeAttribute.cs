@@ -34,12 +34,6 @@ namespace CustomHelper.Authentication.Attributes
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-
             if (_policies.Any() && !await ValidateByPolicies(context))
             {
                 context.Result = new ForbidResult();
