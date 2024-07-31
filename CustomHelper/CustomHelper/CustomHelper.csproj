@@ -8,7 +8,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>helper</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	 <VersionPrefix>1.0.17</VersionPrefix>
+	 <VersionPrefix>1.0.18</VersionPrefix>
   </PropertyGroup>
 	
 	<ItemGroup>
